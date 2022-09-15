@@ -1,6 +1,7 @@
 require("dotenv").config();
 const express = require("express");
 const jwt = require("jsonwebtoken");
+const verifyToken = require("./middleware/auth");
 
 const app = express();
 
@@ -27,7 +28,7 @@ const generateTokens = (payload) => {
     { id, username },
     process.env.ACCESS_TOKEN_SECRET,
     {
-      expiresIn: "30s",
+      expiresIn: "5m",
     }
   );
 
@@ -91,6 +92,13 @@ app.post("/token", (req, res) => {
     console.error(error);
     res.sendStatus(403);
   }
+});
+
+app.delete("/logout", verifyToken, (req, res) => {
+  const user = users.find((user) => user.id === req.userId);
+  updateRefreshToken(user.username, null);
+  console.log(users);
+  res.sendStatus(204);
 });
 
 const PORT = process.env.PORT || 5000;
