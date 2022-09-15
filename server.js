@@ -7,32 +7,25 @@ const app = express();
 
 app.use(express.json());
 
-const users = [
+//data2
+
+const posts = [
   {
-    id: 1,
-    username: "khanhdii",
+    userId: 1,
+    post: "khanhdii",
   },
   {
-    id: 2,
-    username: "myan",
+    userId: 2,
+    post: "myan",
+  },
+  {
+    userId: 1,
+    post: "khanhdii2",
   },
 ];
 
-app.get("/ posts", verifyToken, (req, res) => {
-  res.json({ posts: "my posts" });
-});
-
-app.post("/login", (req, res) => {
-  const username = req.body.username;
-  const user = users.find((user) => user.username === username);
-
-  if (!user) return res.sendStatus(401);
-
-  /// create JWT
-
-  const accessToken = jwt.sign(user, process.env.ACCESS_TOKEN_SECRET);
-
-  res.json({ accessToken: accessToken });
+app.get("/posts", verifyToken, (req, res) => {
+  res.json(posts.filter((post) => post.userId === req.userId));
 });
 
 const PORT = process.env.PORT || 4000;
